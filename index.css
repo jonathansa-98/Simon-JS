@@ -1,0 +1,251 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-panel {
+    font-size: 1.3rem;
+    margin-bottom: 1em;
+}
+
+.restart {
+    cursor: pointer;
+}
+
+/* Style for deck*/
+.deck {
+    background-color: #8F8F8F;
+    width: 300px;
+    height: 300px;
+    display: grid;
+    padding: 10px;
+    border-radius: 10px;
+    grid-template-columns: repeat(2, minmax(50px, 1fr));
+    box-shadow: 8px 9px 26px 0 rgba(45, 58, 68, 0.5);
+}
+
+.panel {
+    background-color: rgba(46, 46, 46, 0.267);
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.panel.red{
+    border: 5px solid red;
+}
+
+.panel.red.pulsa{
+    background-color: red;
+}
+
+.panel.yellow{
+    border: 5px solid yellow;
+}
+
+.panel.yellow.pulsa {
+    background-color: yellow;
+}
+
+.panel.blue{
+    border: 5px solid blue;
+}
+
+.panel.blue.pulsa {
+    background-color: blue;
+}
+
+.panel.green{
+    border: 5px solid green;
+}
+
+.panel.green.pulsa {
+    background-color: green;
+}
+
+/*style for panel events*/
+.deck .panel.open {
+    transform: rotateY(0);
+    background: #02b3e4;
+    cursor: default;
+    animation-name: flipInY;
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    animation-duration: .75s;
+}
+
+.deck .panel.show {
+    color: white;
+}
+
+.deck .panel.match {
+    cursor: default;
+    background: #24FF00;
+    animation-name: rubberBand;
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    animation-duration: .75s;
+}
+
+.deck .panel.unmatched {
+    animation-name: pulse;
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    animation-duration: .75s;
+    background: #e2043b;
+}
+
+.deck .panel.disabled {
+    pointer-events: none;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 15em;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 450px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #02b3e4;
+    color: white;
+}
+
+.modal-body {
+    padding: 2px 16px;
+}
+
+/* animations */
+@keyframes flipInY {
+    from {
+        transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+        animation-timing-function: ease-in;
+        opacity: 0;
+    }
+
+    40% {
+        transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+        animation-timing-function: ease-in;
+    }
+
+    60% {
+        transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+        opacity: 1;
+    }
+
+    80% {
+        transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+    }
+
+    to {
+        transform: perspective(400px);
+    }
+}
+
+@keyframes rubberBand {
+    from {
+        transform: scale3d(1, 1, 1);
+    }
+
+    30% {
+        transform: scale3d(1.25, 0.75, 1);
+    }
+
+    40% {
+        transform: scale3d(0.75, 1.25, 1);
+    }
+
+    50% {
+        transform: scale3d(1.15, 0.85, 1);
+    }
+
+    65% {
+        transform: scale3d(.95, 1.05, 1);
+    }
+
+    75% {
+        transform: scale3d(1.05, .95, 1);
+    }
+
+    to {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes pulse {
+    from {
+        transform: scale3d(1, 1, 1);
+    }
+
+    50% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+
+    to {
+        transform: scale3d(1, 1, 1);
+    }
+}
