@@ -54,7 +54,7 @@
 }
 
 #red.pulsa {
-    background-color: green;
+    /* background-color: green; */
     -webkit-animation-name: pulse;
     -webkit-animation-duration: 0.4s;
     animation-name: pulse;

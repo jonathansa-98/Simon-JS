@@ -84,7 +84,7 @@ function play() {
     for (let i = 0; i < MAX_TURNS; i++) {
         order.push(Math.floor(Math.random() * 4) + 1);
     }
-    // console.log(order);
+    console.log(order);
     compTurn = true;
     intervalID = setInterval(gameTurn, 800);
 }
@@ -111,6 +111,7 @@ function gameTurn() {
 
 function one() {
     panRed.style.backgroundColor = "tomato";
+    // panRed.classList.add("pulsa");
 }
 function two() {
     panGreen.style.backgroundColor = "lightgreen";
@@ -148,7 +149,7 @@ function flashColor() {
     /*allPan.forEach(pan => {
         pan.classList.add("pulsa");
     });*/
-    panRed.style.backgroundColor = "darkred";
+    panRed.style.backgroundColor = "tomato";
     panGreen.style.backgroundColor = "lightgreen";
     panBlue.style.backgroundColor = "skyblue";
     panYellow.style.backgroundColor = "yellow";
@@ -203,17 +204,20 @@ function check() {
     if(playerOrder.length == MAX_TURNS && good) {
         winGame();
     }
-    if (good == false) {
+    if (!good) {
         flashColor();
         turnCounter.innerHTML = "----";
         setTimeout(() => {
             turnCounter.innerHTML = turn;
             clearColor();
-            compTurn = true;
-            flash = 0;
-            playerOrder = [];
-            good = true;
-            intervalID = setInterval(gameTurn, 800);
+            //dificil resetea el juego entero
+            play();
+            //facil empieza desde la ultima tirada
+            // compTurn = true;
+            // flash = 0;
+            // playerOrder = [];
+            // good = true;
+            // intervalID = setInterval(gameTurn, 800);
         }, 800);
     }
     if(turn == playerOrder.length && good && !win) {
@@ -229,7 +233,7 @@ function check() {
 function winGame() {
     flashColor();
     turnCounter.innerHTML = "WIN!";
-    wind = true;
+    win = true;
     activatePanels(false);
 }
 
