@@ -11,23 +11,15 @@ function init() {
     // p turn
     var turnP = document.createElement("p");
     scorePanel.appendChild(turnP);
-    // turn
+    // span turn nº
     var nTurn = document.createElement("span");
     nTurn.id = "turn";
+    nTurn.innerHTML = "0";
     turnP.appendChild(nTurn);
-    // texto turn
+    // span (move(s)) turn
     var textTurn = document.createElement("span");
     textTurn.innerHTML = " move(s)";
     turnP.appendChild(textTurn);
-
-    // jugada pc
-    var jugadaPc = document.createElement("p");
-    jugadaPc.id = "jugadaPc";
-    scorePanel.appendChild(jugadaPc);
-    // jugada persona
-    var jugadaPersona = document.createElement("p");
-    jugadaPersona.id = "jugadaPersona";
-    scorePanel.appendChild(jugadaPersona);
 
     // tablero
     var container = document.querySelector("#container");
@@ -48,16 +40,16 @@ function creaPanel(color, padre) {
 }
 
 // variables
-var order = []; // orden de iluminaciones pc
+var pcOrder = []; // orden de iluminaciones pc
 var playerOrder = [] // orden de iluminacion persona
 var flash; // flashes que aparecieron
 var turn; // la ronda en la que estamos
 var good; // usuario acierta la ronda
-var compTurn; // bool que dice si es el turno de la maquina
+var pcTurn; // bool que dice si es el turno de la maquina
 var intervalID;
 var win; // si ha ganado todo
 
-const MAX_TURNS = 5; // maximo de turnos que juegas hasta ganar
+const MAX_TURNS = 3; // maximo de turnos que juegas hasta ganar
 
 const deck = document.querySelector('#deck');
 const btnStart = document.querySelector("#start");
@@ -68,13 +60,14 @@ const panBlue = document.querySelector("#blue");
 const panYellow = document.querySelector("#yellow");
 const allPan = document.querySelectorAll(".panel");
 
+// motor del juego
 btnStart.addEventListener('click', (event) => {
     play();
 });
 
 function play() {
     win = false;
-    order = [];
+    pcOrder = [];
     playerOrder = [];
     flash = 0;
     intervalID = 0;
@@ -82,48 +75,47 @@ function play() {
     turnCounter.innerHTML = 1;
     good = true;
     for (let i = 0; i < MAX_TURNS; i++) {
-        order.push(Math.floor(Math.random() * 4) + 1);
+        pcOrder.push(Math.floor(Math.random() * 4) + 1);
     }
-    console.log(order);
-    compTurn = true;
+    console.log(pcOrder);
+    pcTurn = true;
     intervalID = setInterval(gameTurn, 800);
 }
 
 function gameTurn() {
-    activatePanels(false);
+    tooglePanels(false);
     if(flash == turn) {
         clearInterval(intervalID);
-        compTurn = false;
+        pcTurn = false;
         clearColor();
-        activatePanels(true);
+        tooglePanels(true);
     }
-    if (compTurn) {
+    if (pcTurn) {
         clearColor();
         setTimeout(() => {
-            if (order[flash] == 1) one();//panRed.classList.add("pulsa");
-            if (order[flash] == 2) two();//panGreen.classList.add("pulsa");
-            if (order[flash] == 3) three();//panBlue.classList.add("pulsa");
-            if (order[flash] == 4) four();//panYellow.classList.add("pulsa");
+            if (pcOrder[flash] == 1) red();
+            if (pcOrder[flash] == 2) green();
+            if (pcOrder[flash] == 3) blue();
+            if (pcOrder[flash] == 4) yellow();
             flash++;
         }, 200);
     }
 }
 
-function one() {
+function red() {
     panRed.style.backgroundColor = "tomato";
-    // panRed.classList.add("pulsa");
 }
-function two() {
+function green() {
     panGreen.style.backgroundColor = "lightgreen";
 }
-function three() {
+function blue() {
     panBlue.style.backgroundColor = "skyblue";
 }
-function four() {
+function yellow() {
     panYellow.style.backgroundColor = "yellow";
 }
 
-function activatePanels(active) {
+function tooglePanels(active) {
     if(active) {
         allPan.forEach(pan => {
             pan.classList.remove("disabled");
@@ -136,9 +128,6 @@ function activatePanels(active) {
 }
 
 function clearColor() {
-    /*allPan.forEach(pan => {
-        pan.classList.remove("pulsa");
-    });*/
     panRed.style.backgroundColor = "darkred";
     panGreen.style.backgroundColor = "darkgreen";
     panBlue.style.backgroundColor = "darkblue";
@@ -146,9 +135,6 @@ function clearColor() {
 }
 
 function flashColor() {
-    /*allPan.forEach(pan => {
-        pan.classList.add("pulsa");
-    });*/
     panRed.style.backgroundColor = "tomato";
     panGreen.style.backgroundColor = "lightgreen";
     panBlue.style.backgroundColor = "skyblue";
@@ -158,7 +144,7 @@ function flashColor() {
 panRed.addEventListener('click', (event) => {
     playerOrder.push(1);
     check();
-    one();
+    red();
     if(!win) {
         setTimeout(() => {
            clearColor();
@@ -168,7 +154,7 @@ panRed.addEventListener('click', (event) => {
 panGreen.addEventListener('click', (event) => {
     playerOrder.push(2);
     check();
-    two();
+    green();
     if(!win) {
         setTimeout(() => {
            clearColor();
@@ -178,7 +164,7 @@ panGreen.addEventListener('click', (event) => {
 panBlue.addEventListener('click', (event) => {
     playerOrder.push(3);
     check();
-    three();
+    blue();
     if(!win) {
         setTimeout(() => {
            clearColor();
@@ -188,7 +174,7 @@ panBlue.addEventListener('click', (event) => {
 panYellow.addEventListener('click', (event) => {
     playerOrder.push(4);
     check();
-    four();
+    yellow();
     if(!win) {
         setTimeout(() => {
            clearColor();
@@ -198,12 +184,14 @@ panYellow.addEventListener('click', (event) => {
 
 function check() {
     if (playerOrder[playerOrder.length - 1] !==
-              order[playerOrder.length - 1]) {
+              pcOrder[playerOrder.length - 1]) {
         good = false;
     }
+    // gana
     if(playerOrder.length == MAX_TURNS && good) {
         winGame();
     }
+    // pierde
     if (!good) {
         flashColor();
         turnCounter.innerHTML = "----";
@@ -220,10 +208,11 @@ function check() {
             // intervalID = setInterval(gameTurn, 800);
         }, 800);
     }
+    // continua al siguiente turno
     if(turn == playerOrder.length && good && !win) {
         turn++;
         playerOrder = [];
-        compTurn = true;
+        pcTurn = true;
         flash = 0;
         turnCounter.innerHTML = turn;
         intervalID = setInterval(gameTurn, 800);
@@ -232,98 +221,25 @@ function check() {
 
 function winGame() {
     flashColor();
-    turnCounter.innerHTML = "WIN!";
     win = true;
-    activatePanels(false);
+    tooglePanels(false);
+    congratulations();
 }
 
-/*
-
-var colores = ["red", "blue", "yellow", "green"];
-var pc_colores;
-var mis_colores;
-var moves;
-
-*/
-/*******************************/
-/*
-
-
-// addEventListener paneles
-deck.addEventListener('click', e => {
-    var panel = e.target;
-    if (panel.classList.contains('panel')) {
-        checkJugada(panel);
-    }
-});
-
-function restart() {
-    pc_colores = [];
-    mis_colores = [];
-    moves = 5;
-    console.log(colores);
-    for (let x = 0; x < moves; x++) {
-        randomColores();
-    }
-    console.log(pc_colores);
-    for (let j = 0; j < moves; j++) {
-        //animarPanel(j);
-        verJugadaPc();
-    }
-
-    var interval = setInterval(() => {
-        if (moves == 25) {
-            clearInterval(interval);
+/* Show victory modal*/
+function congratulations() {
+    clearInterval(intervalID);
+    var modal = document.getElementById('myModal');
+    var span = document.getElementsByClassName("close")[0];
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    span.addEventListener('click', function () {
+        modal.style.display = "none";
+    });
+    // When the user clicks anywhere outside of the modal, close it
+    window.addEventListener('click', function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
-        moves++;
-        console.log(moves);
-    }, 1000);
+    });
 }
-
-function randomColores() {
-    var num;
-    num = Math.floor(Math.random() * 4);
-    pc_colores.push(colores[num]);
-}
-
-// ver todos los pasos que ha hecho el pc.
-function verJugadaPc() {
-    var jugada_pc = document.querySelector("#jugada_pc");
-    jugada_pc.innerHTML = "PC eligio: ";
-    for (let f = 0; f < pc_colores.length; f++) {
-        jugada_pc.innerHTML += pc_colores[f] + " ";
-    }
-}
-
-// ver todos los pasos que ha hecho la persona.
-function verJugadaMia() {
-    var jugada_persona = document.querySelector("#jugada_persona");
-    jugada_persona.innerHTML = "TU elegiste: ";
-    for (let f = 0; f < mis_colores.length; f++) {
-        jugada_persona.innerHTML += mis_colores[f] + " ";
-    }
-}
-
-function checkJugada(panel) {
-    if (mis_colores != undefined) {
-        console.log(panel.classList[1]);
-        mis_colores.push(panel.classList[1]);
-        verJugadaMia();
-    }
-}
-
-/*
-function animarPanel(i) {
-    var paneles = document.getElementsByClassName("panel");
-    for (var panel of paneles) {
-        if(panel.classList.contains(pc_colores[i])){
-            console.log(pc_colores[i]);
-            setTimeout(() => {
-                panel.classList.add("pulsa");
-            }, 500);
-            panel.classList.remove("pulsa");
-            console.log(panel.className);
-
-        }
-    }
-}*/
