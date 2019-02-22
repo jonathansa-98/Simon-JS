@@ -1,20 +1,20 @@
-.container {
+#container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.score-panel {
+#score-panel {
     font-size: 1.3rem;
     margin-bottom: 1em;
 }
 
-.restart {
+#start {
     cursor: pointer;
 }
 
 /* Style for deck*/
-.deck {
+#deck {
     background-color: #8F8F8F;
     width: 300px;
     height: 300px;
@@ -26,78 +26,63 @@
 }
 
 .panel {
-    background-color: rgba(46, 46, 46, 0.267);
     margin: 10px;
     cursor: pointer;
     border-radius: 5px;
 }
 
-.panel.red{
-    border: 5px solid red;
+#red{
+    background-color: darkred;
 }
 
-.panel.red.pulsa{
-    background-color: red;
+#yellow{
+    background-color: darkgoldenrod;
 }
 
-.panel.yellow{
-    border: 5px solid yellow;
+#blue{
+    background-color: darkblue;
 }
 
-.panel.yellow.pulsa {
-    background-color: yellow;
-}
-
-.panel.blue{
-    border: 5px solid blue;
-}
-
-.panel.blue.pulsa {
-    background-color: blue;
-}
-
-.panel.green{
-    border: 5px solid green;
-}
-
-.panel.green.pulsa {
-    background-color: green;
+#green{
+    background-color:darkgreen;
 }
 
 /*style for panel events*/
-.deck .panel.open {
-    transform: rotateY(0);
-    background: #02b3e4;
-    cursor: default;
-    animation-name: flipInY;
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    animation-duration: .75s;
-}
-
-.deck .panel.show {
-    color: white;
-}
-
-.deck .panel.match {
-    cursor: default;
-    background: #24FF00;
-    animation-name: rubberBand;
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    animation-duration: .75s;
-}
-
-.deck .panel.unmatched {
-    animation-name: pulse;
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    animation-duration: .75s;
-    background: #e2043b;
-}
-
-.deck .panel.disabled {
+.disabled {
+    cursor: pointer;
     pointer-events: none;
+}
+
+#red.pulsa {
+    background-color: green;
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 0.4s;
+    animation-name: pulse;
+    animation-duration: 0.4s
+}
+
+#yellow.pulsa {
+    background-color: yellow;
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 0.4s;
+    animation-name: pulse;
+    animation-duration: 0.4s
+}
+
+#blue.pulsa {
+    background-color: skyblue;
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 0.4s;
+    animation-name: pulse;
+    animation-duration: 0.4s
+}
+
+#green.pulsa {
+    background-color: lightgreen;
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 0.4s;
+    animation-name: pulse;
+    animation-duration: 0.4s
 }
 
 /* The Modal (background) */
@@ -180,62 +165,6 @@
 }
 
 /* animations */
-@keyframes flipInY {
-    from {
-        transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
-        animation-timing-function: ease-in;
-        opacity: 0;
-    }
-
-    40% {
-        transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
-        animation-timing-function: ease-in;
-    }
-
-    60% {
-        transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
-        opacity: 1;
-    }
-
-    80% {
-        transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
-    }
-
-    to {
-        transform: perspective(400px);
-    }
-}
-
-@keyframes rubberBand {
-    from {
-        transform: scale3d(1, 1, 1);
-    }
-
-    30% {
-        transform: scale3d(1.25, 0.75, 1);
-    }
-
-    40% {
-        transform: scale3d(0.75, 1.25, 1);
-    }
-
-    50% {
-        transform: scale3d(1.15, 0.85, 1);
-    }
-
-    65% {
-        transform: scale3d(.95, 1.05, 1);
-    }
-
-    75% {
-        transform: scale3d(1.05, .95, 1);
-    }
-
-    to {
-        transform: scale3d(1, 1, 1);
-    }
-}
-
 @keyframes pulse {
     from {
         transform: scale3d(1, 1, 1);

@@ -1,57 +1,249 @@
 window.onload = init();
-
+// crea documento
 function init() {
-    var score_panel = document.getElementsByClassName("score-panel")[0];
-    var btn_restart = document.createElement("button");
-    // btn restart
-    btn_restart.className = "restart";
-    btn_restart.innerHTML = "Start/Restart";
-    btn_restart.addEventListener("click", restart);
-    score_panel.appendChild(btn_restart);
-    // p moves
-    var moves_p = document.createElement("p");
-    score_panel.appendChild(moves_p);
-    // moves
-    var n_moves = document.createElement("span");
-    n_moves.className = "moves";
-    n_moves.innerHTML = "1";
-    moves_p.appendChild(n_moves);
-    // texto moves
-    var text_moves = document.createElement("span");
-    text_moves.innerHTML = " move(s)";
-    moves_p.appendChild(text_moves);
+    var scorePanel = document.querySelector("#score-panel");
+    var btnStart = document.createElement("button");
+    // btn start
+    btnStart.id = "start";
+    btnStart.innerHTML = "Start/Restart";
+    scorePanel.appendChild(btnStart);
+
+    // p turn
+    var turnP = document.createElement("p");
+    scorePanel.appendChild(turnP);
+    // turn
+    var nTurn = document.createElement("span");
+    nTurn.id = "turn";
+    turnP.appendChild(nTurn);
+    // texto turn
+    var textTurn = document.createElement("span");
+    textTurn.innerHTML = " move(s)";
+    turnP.appendChild(textTurn);
+
     // jugada pc
-    var jugada_pc = document.createElement("p");
-    jugada_pc.id = "jugada_pc";
-    score_panel.appendChild(jugada_pc);
+    var jugadaPc = document.createElement("p");
+    jugadaPc.id = "jugadaPc";
+    scorePanel.appendChild(jugadaPc);
     // jugada persona
-    var jugada_persona = document.createElement("p");
-    jugada_persona.id = "jugada_persona";
-    score_panel.appendChild(jugada_persona);
+    var jugadaPersona = document.createElement("p");
+    jugadaPersona.id = "jugadaPersona";
+    scorePanel.appendChild(jugadaPersona);
+
     // tablero
-    var container = document.getElementsByClassName("container")[0];
+    var container = document.querySelector("#container");
     var deck = document.createElement("div");
-    deck.className = "deck";
+    deck.id = "deck";
     container.appendChild(deck);
-    creaPanel(0, "red", deck);
-    creaPanel(1, "green", deck);
-    creaPanel(2, "blue", deck);
-    creaPanel(3, "yellow", deck);
+    creaPanel("red", deck);
+    creaPanel("green", deck);
+    creaPanel("blue", deck);
+    creaPanel("yellow", deck);
 }
 
-function creaPanel(i, color, padre) {
+function creaPanel(color, padre) {
     var panel = document.createElement("div");
-    panel.id = i;
-    panel.classList.add("panel");
-    panel.classList.add(color);
+    panel.id = color;
+    panel.className = "panel";
     padre.appendChild(panel);
 }
 
-var deck = document.querySelector('.deck');
+// variables
+var order = []; // orden de iluminaciones pc
+var playerOrder = [] // orden de iluminacion persona
+var flash; // flashes que aparecieron
+var turn; // la ronda en la que estamos
+var good; // usuario acierta la ronda
+var compTurn; // bool que dice si es el turno de la maquina
+var intervalID;
+var win; // si ha ganado todo
+
+const MAX_TURNS = 5; // maximo de turnos que juegas hasta ganar
+
+const deck = document.querySelector('#deck');
+const btnStart = document.querySelector("#start");
+const turnCounter = document.querySelector("#turn");
+const panRed = document.querySelector("#red");
+const panGreen = document.querySelector("#green");
+const panBlue = document.querySelector("#blue");
+const panYellow = document.querySelector("#yellow");
+const allPan = document.querySelectorAll(".panel");
+
+btnStart.addEventListener('click', (event) => {
+    play();
+});
+
+function play() {
+    win = false;
+    order = [];
+    playerOrder = [];
+    flash = 0;
+    intervalID = 0;
+    turn = 1;
+    turnCounter.innerHTML = 1;
+    good = true;
+    for (let i = 0; i < MAX_TURNS; i++) {
+        order.push(Math.floor(Math.random() * 4) + 1);
+    }
+    // console.log(order);
+    compTurn = true;
+    intervalID = setInterval(gameTurn, 800);
+}
+
+function gameTurn() {
+    activatePanels(false);
+    if(flash == turn) {
+        clearInterval(intervalID);
+        compTurn = false;
+        clearColor();
+        activatePanels(true);
+    }
+    if (compTurn) {
+        clearColor();
+        setTimeout(() => {
+            if (order[flash] == 1) one();//panRed.classList.add("pulsa");
+            if (order[flash] == 2) two();//panGreen.classList.add("pulsa");
+            if (order[flash] == 3) three();//panBlue.classList.add("pulsa");
+            if (order[flash] == 4) four();//panYellow.classList.add("pulsa");
+            flash++;
+        }, 200);
+    }
+}
+
+function one() {
+    panRed.style.backgroundColor = "tomato";
+}
+function two() {
+    panGreen.style.backgroundColor = "lightgreen";
+}
+function three() {
+    panBlue.style.backgroundColor = "skyblue";
+}
+function four() {
+    panYellow.style.backgroundColor = "yellow";
+}
+
+function activatePanels(active) {
+    if(active) {
+        allPan.forEach(pan => {
+            pan.classList.remove("disabled");
+        });
+    } else {
+        allPan.forEach(pan => {
+            pan.classList.add("disabled");
+        });
+    }
+}
+
+function clearColor() {
+    /*allPan.forEach(pan => {
+        pan.classList.remove("pulsa");
+    });*/
+    panRed.style.backgroundColor = "darkred";
+    panGreen.style.backgroundColor = "darkgreen";
+    panBlue.style.backgroundColor = "darkblue";
+    panYellow.style.backgroundColor = "darkgoldenrod";
+}
+
+function flashColor() {
+    /*allPan.forEach(pan => {
+        pan.classList.add("pulsa");
+    });*/
+    panRed.style.backgroundColor = "darkred";
+    panGreen.style.backgroundColor = "lightgreen";
+    panBlue.style.backgroundColor = "skyblue";
+    panYellow.style.backgroundColor = "yellow";
+}
+
+panRed.addEventListener('click', (event) => {
+    playerOrder.push(1);
+    check();
+    one();
+    if(!win) {
+        setTimeout(() => {
+           clearColor();
+        }, 300);
+    }
+});
+panGreen.addEventListener('click', (event) => {
+    playerOrder.push(2);
+    check();
+    two();
+    if(!win) {
+        setTimeout(() => {
+           clearColor();
+        }, 300);
+    }
+});
+panBlue.addEventListener('click', (event) => {
+    playerOrder.push(3);
+    check();
+    three();
+    if(!win) {
+        setTimeout(() => {
+           clearColor();
+        }, 300);
+    }
+});
+panYellow.addEventListener('click', (event) => {
+    playerOrder.push(4);
+    check();
+    four();
+    if(!win) {
+        setTimeout(() => {
+           clearColor();
+        }, 300);
+    }
+});
+
+function check() {
+    if (playerOrder[playerOrder.length - 1] !==
+              order[playerOrder.length - 1]) {
+        good = false;
+    }
+    if(playerOrder.length == MAX_TURNS && good) {
+        winGame();
+    }
+    if (good == false) {
+        flashColor();
+        turnCounter.innerHTML = "----";
+        setTimeout(() => {
+            turnCounter.innerHTML = turn;
+            clearColor();
+            compTurn = true;
+            flash = 0;
+            playerOrder = [];
+            good = true;
+            intervalID = setInterval(gameTurn, 800);
+        }, 800);
+    }
+    if(turn == playerOrder.length && good && !win) {
+        turn++;
+        playerOrder = [];
+        compTurn = true;
+        flash = 0;
+        turnCounter.innerHTML = turn;
+        intervalID = setInterval(gameTurn, 800);
+    }
+}
+
+function winGame() {
+    flashColor();
+    turnCounter.innerHTML = "WIN!";
+    wind = true;
+    activatePanels(false);
+}
+
+/*
+
 var colores = ["red", "blue", "yellow", "green"];
 var pc_colores;
 var mis_colores;
 var moves;
+
+*/
+/*******************************/
+/*
+
 
 // addEventListener paneles
 deck.addEventListener('click', e => {
